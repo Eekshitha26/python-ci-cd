@@ -10,17 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout your code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Authenticate to GCP (optional, using your JSON key)
       - name: Authenticate with GCP
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.SA_KEY }}
 
-      # 3️⃣ Deploy to VM via SSH
       - name: Deploy Flask App via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -31,25 +28,19 @@ jobs:
           script: |
             APP_DIR="/home/eekshita sai cloudambassadors co/flaskapp"
 
-            # Make sure app directory exists
             mkdir -p "$APP_DIR"
             cd "$APP_DIR"
 
-            # Clone repo if first time, else pull latest code
             if [ ! -d ".git" ]; then
-              git clone https://github.com/Eekshitha26/python-ci-cd.git
+              git clone https://github.com/Eekshitha26/python-ci-cd.git .
             else
               git pull origin main
             fi
 
-            # Setup Python virtual environment
             python3 -m venv venv
             source venv/bin/activate
-
-            # Install/update dependencies
             pip install --upgrade pip
             pip install -r requirements.txt
 
-            # Restart Flask systemd service
             sudo systemctl daemon-reload
             sudo systemctl restart flaskapp
