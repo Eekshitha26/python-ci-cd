@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Authenticate with GCP
         uses: google-github-actions/auth@v1
@@ -22,25 +22,26 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VM_HOST }}
-          username: "${{ secrets.VM_USER }}"
+          username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
-          port: 22
+          port: ${{ secrets.SSH_PORT }}
           script: |
-            APP_DIR="$HOME/python-ci-cd"
+            set -e
 
-            mkdir -p "$APP_DIR"
+            APP_DIR="/home/pavan_kalyan_cloudambassadors_co/python-ci-cd"
+
+            echo "➡️ Moving to app directory"
             cd "$APP_DIR"
 
-            if [ ! -d ".git" ]; then
-              git clone https://github.com/Eekshitha26/python-ci-cd.git .
-            else
-              git pull origin main
-            fi
+            echo "➡️ Pull latest code"
+            git fetch origin
+            git reset --hard origin/main
 
-            python3 -m venv venv
+            echo "➡️ Activate virtualenv"
             source venv/bin/activate
-            pip install --upgrade pip
+
+            echo "➡️ Install dependencies"
             pip install -r requirements.txt
 
-            sudo systemctl daemon-reload
+            echo "➡️ Restart Flask service"
             sudo systemctl restart flaskapp
