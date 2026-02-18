@@ -22,17 +22,9 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             set -e
+            git clone --branch main https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
             ls -al
-
-            APP_DIR="/home/pavan_kalyan_cloudambassadors_co/python-ci-cd"
-
-            echo "➡️ Moving to app directory"
-            cd "$APP_DIR"
-
-            echo "➡️ Pull latest code"
-            git fetch origin
-            git reset --hard origin/main
-
             echo "➡️ Activate virtualenv"
             source venv/bin/activate
 
