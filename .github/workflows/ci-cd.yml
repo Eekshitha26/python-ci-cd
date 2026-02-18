@@ -22,11 +22,15 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             set -e
-            git clone --branch main https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-
-            ls -al
+            cd ~
+            if [ -d python-ci-cd ]; then
+              echo \"Removing existing directory to ensure clean state...\"
+              sudo rm -rf python-ci-cd
+            fi
+            git clone --branch main https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} python-ci-cd
             cd python-ci-cd
             ls -al
+            python3 -m venv venv
             echo "➡️ Activate virtualenv"
             source venv/bin/activate
 
