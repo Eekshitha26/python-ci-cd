@@ -27,6 +27,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             set -e
+            ls -al
 
             APP_DIR="/home/pavan_kalyan_cloudambassadors_co/python-ci-cd"
 
