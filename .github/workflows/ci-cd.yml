@@ -25,6 +25,8 @@ jobs:
             git clone --branch main https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
             ls -al
+            cd python-ci-cd
+            ls -al
             echo "➡️ Activate virtualenv"
             source venv/bin/activate
 
