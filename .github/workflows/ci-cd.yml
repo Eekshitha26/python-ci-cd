@@ -1,5 +1,6 @@
 name: Deploy Flask App to GCP VM
 
+# Trigger: Run this workflow whenever code is pushed to main branch
 on:
   push:
     branches:
@@ -7,35 +8,47 @@ on:
 
 jobs:
   deploy:
+    # GitHub-hosted runner (Linux VM provided by GitHub)
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+    # Step 2: SSH into the GCP VM and execute deployment commands
       - name: Deploy Flask App via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.VM_HOST }} # stores VM External IP
+          username: ${{ secrets.VM_USER }} # stores Linux Username on the VM
+          key: ${{ secrets.VM_SSH_KEY }} # Stored Jason Credentials for Authentication
+          port: ${{ secrets.SSH_PORT }} # Store ssh port
           script: |
+            # Exit immediately if any command fails (safe deployment practice)
             set -e
             cd ~
+            # If the previous deployment folder exists, remove it completely
+            # This ensures clean deployment every time (no stale files)
             if [ -d python-ci-cd ]; then
               echo \"Removing existing directory to ensure clean state...\"
               sudo rm -rf python-ci-cd
             fi
+            # Clone a fresh copy of the repository using GitHub token authentication
+            # Ensures private repos can be accessed securely
             git clone --branch main https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} python-ci-cd
             cd python-ci-cd
+            # List files to verify successful clone
             ls -al
+            # Create Python virtual environment
+            # Isolates dependencies from system Python
             python3 -m venv venv
-            echo "➡️ Activate virtualenv"
+            echo "Activate virtualenv"
+            # Activate virtual environment
             source venv/bin/activate
-
-            echo "➡️ Install dependencies."
+            # Install project dependencies from requirements.txt
+            echo "Install dependencies."
             pip install -r requirements.txt
 
-            echo "➡️ Restart Flask service"
+            # Restart systemd service to apply new code
+            # Assumes you have a service file named flaskapp.service
+            echo "Restart Flask service"
             sudo systemctl restart flaskapp
