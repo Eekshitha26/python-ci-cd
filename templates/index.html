@@ -84,7 +84,7 @@ p {
 
 <div class="container">
     <h1>🚀 Rocket Launch</h1>
-    <p>Version1 will showcase using Github ACtion pipeline</p>
+    <p>Version 1 was deployed manually to demonstrate the traditional release process</p>
 
     <img src="{{ url_for('static', filename='rocket.png') }}" 
          alt="Rocket" class="rocket">
@@ -101,7 +101,7 @@ function updateCountdown() {
     const distance = launchDate - now;
 
     if (distance < 0) {
-        countdownEl.innerHTML = "🚀 Successfully Launched!";
+        countdownEl.innerHTML = "Successfully Launched!";
         return;
     }
 
