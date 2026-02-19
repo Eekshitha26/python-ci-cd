@@ -4,7 +4,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 # Launch date: 19-Feb-2026 at 12:00 PM UTC
-LAUNCH_DATE = datetime(2026, 2, 19, 12, 0, 0)
+LAUNCH_DATE = datetime(2026, 2, 19, 17, 0, 0)
 
 @app.route("/")
 def home():
