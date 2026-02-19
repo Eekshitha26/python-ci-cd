@@ -34,7 +34,7 @@ jobs:
             echo "➡️ Activate virtualenv"
             source venv/bin/activate
 
-            echo "➡️ Install dependencies"
+            echo "➡️ Install dependencies."
             pip install -r requirements.txt
 
             echo "➡️ Restart Flask service"
